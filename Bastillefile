@@ -1,4 +1,4 @@
-ARG version=13
+ARG version=210
 
 # install required packages
 INCLUDE https://github.com/bastille-templates/openjdk/tree/v11
