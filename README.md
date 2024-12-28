@@ -1,7 +1,7 @@
 ## Now apply template to container
 ```sh
-bastille bootstrap https://github.com/bastille-templates/elasticsearch
-bastille template elasticsearch bastille-templates/elasticsearch
+bastille bootstrap https://github.com/bastille-templates/opensearch
+bastille template opensearch bastille-templates/opensearch
 ```
 Edii file /usr/local/bastille/jails/container/fstab
 ```sh
