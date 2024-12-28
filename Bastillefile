@@ -1,0 +1,13 @@
+ARG version=13
+
+# install required packages
+INCLUDE https://github.com/bastille-templates/openjdk/tree/v11
+
+PKG elasticsearch${version}
+# copy files
+CP etc /
+
+# enable and start elasticsearch
+SYSRC elasticsearch_enable=YES
+
+SERVICE elasticsearch start
