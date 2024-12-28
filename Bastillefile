@@ -3,11 +3,11 @@ ARG version=210
 # install required packages
 INCLUDE https://github.com/bastille-templates/openjdk/tree/v17
 
-PKG elasticsearch${version}
+PKG opensearch${version}
 # copy files
 CP etc /
 
-# enable and start elasticsearch
-SYSRC elasticsearch_enable=YES
+# enable and start opensearch
+SYSRC opensearch_enable=YES
 
-SERVICE elasticsearch start
+SERVICE opensearch start
