@@ -1,7 +1,7 @@
 ARG version=210
 
 # install required packages
-INCLUDE https://github.com/bastille-templates/openjdk/tree/v11
+INCLUDE https://github.com/bastille-templates/openjdk/tree/v17
 
 PKG elasticsearch${version}
 # copy files
