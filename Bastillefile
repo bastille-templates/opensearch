@@ -1,4 +1,5 @@
 ARG version=210
+ARG v_jdk=17
 
 # install required packages
 INCLUDE https://github.com/bastille-templates/openjdk/tree/v17
@@ -6,8 +7,10 @@ INCLUDE https://github.com/bastille-templates/openjdk/tree/v17
 PKG opensearch${version}
 # copy files
 CP etc /
+CP usr /
 
 # enable and start opensearch
 SYSRC opensearch_enable=YES
+SYSRC opensearch_java_home=/usr/local/openjdk${v_jdk}
 
 SERVICE opensearch start
