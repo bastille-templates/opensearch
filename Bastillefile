@@ -2,9 +2,7 @@ ARG version=210
 ARG v_jdk=17
 
 # install required packages
-INCLUDE https://github.com/bastille-templates/openjdk/tree/v17
-
-PKG opensearch${version}
+PKG opensearch${version} openjdk${v_jdk}
 # copy files
 CP etc /
 CP usr /
