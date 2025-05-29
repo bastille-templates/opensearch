@@ -1,45 +1,77 @@
 CMD sed -e "s|quarterly|latest|g" -i.bak /etc/pkg/FreeBSD.conf
 
-PKG opensearch219 opensearch-dashboards219
+PKG bash opensearch219 opensearch-dashboards219 beats8 logstash8 openjdk17
 
+CP files/usr/local/etc/beats/filebeat.yml /usr/local/etc/beats/
+CP files/usr/local/etc/logstash/logstash.conf /usr/local/etc/logstash/
 CP files/usr/local/etc/opensearch/opensearch.yml /usr/local/etc/opensearch/opensearch.yml
+CP files/usr/local/etc/opensearch-dashboards/opensearch_dashboards.yml /usr/local/etc/opensearch-dashboards/
+CP files/root/pre-opensearch-init.sh /root/
+CP files/root/post-opensearch-init.sh /root/
+
+CMD echo "${JAIL_IP} localhost localhost.local" > /etc/hosts
+CMD sed -e "s,%%SERVER_IP%%,${JAIL_IP},g" -i "" /usr/local/etc/beats/filebeat.yml
+CMD chown root:wheel /usr/local/etc/beats/filebeat.yml
+CMD sed -e "s,%%SERVER_IP%%,${JAIL_IP},g" -i "" /usr/local/etc/logstash/logstash.conf
+CMD chown root:wheel /usr/local/etc/logstash/logstash.conf
+CMD sed -e "s,%%SERVER_IP%%,${JAIL_IP},g" -i "" /usr/local/etc/opensearch/opensearch.yml
+CMD chown root:wheel /usr/local/etc/opensearch/opensearch.yml
 CMD sed -e "s,%%SERVER_IP%%,${JAIL_IP},g" -i "" /usr/local/etc/opensearch-dashboards/opensearch_dashboards.yml
+CMD chown root:wheel /usr/local/etc/opensearch-dashboards/opensearch_dashboards.yml
+CMD chown root:wheel /etc/hosts
+CMD sed -e "s,%%SERVER_IP%%,${JAIL_IP},g" -i "" /root/post-opensearch-init.sh
+CMD chown root:wheel /root/pre-opensearch-init.sh
+CMD chown root:wheel /root/post-opensearch-init.sh
 
-CMD cd /tmp/; fetch "https://github.com/bastille-templates/openssl/archive/refs/tags/gen-ssl0.0.1.tar.gz"
-CMD cd /tmp/; tar xvfz gen-ssl0.0.1.tar.gz
-CMD echo "indexer1_ip=${JAIL_IP}" > /tmp/openssl-gen-ssl0.0.1/gen-certs/in.indexer.lst
-CMD echo "server1_ip=${JAIL_IP}" > /tmp/openssl-gen-ssl0.0.1/gen-certs/in.server.lst
-CMD echo "dashboard_ip=${JAIL_IP}" > /tmp/openssl-gen-ssl0.0.1/gen-certs/in.dashboard.lst
-CMD cd /tmp/openssl-gen-ssl0.0.1/gen-certs; echo y | sh gen-certs.sh
+CMD sh /root/pre-opensearch-init.sh
+CMD rm /root/pre-opensearch-init.sh
 
+CMD mkdir -p /usr/local/etc/opensearch-dashboards/certs/
 CMD mkdir -p /usr/local/etc/opensearch/certs/
-CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/admin.pem /usr/local/etc/opensearch/certs/
+CMD cd /root/; fetch "https://people.freebsd.org/~acm/ports/wazuh/freebsd-logo.png"
+CMD cd /root/; fetch "https://people.freebsd.org/~acm/ports/wazuh/freebsd-mark-logo.png"
+CMD cd /root/; fetch "https://people.freebsd.org/~acm/ports/wazuh/wazuh-gen-certs.tar.gz"
+CMD cd /root/; tar xvfz wazuh-gen-certs.tar.gz
+CMD echo "dashboard_ip=${JAIL_IP}" > /root/wazuh-gen-certs/dashboard.lst
+CMD echo "indexer1_ip=${JAIL_IP}" > /root/wazuh-gen-certs/indexer.lst
+CMD echo "server1_ip=${JAIL_IP}" > /root/wazuh-gen-certs/server.lst
+CMD cd /root/wazuh-gen-certs; echo y | sh gen-certs.sh
+
+CMD chmod 660 /var/ossec/etc/ossec.conf
+CMD chown root:wazuh /var/ossec/etc/ossec.conf
+
+CMD cp /root/wazuh-gen-certs/wazuh-certificates/admin.pem /usr/local/etc/opensearch/certs/
 CMD chmod 640 /usr/local/etc/opensearch/certs/admin.pem
 CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/admin.pem
-CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/admin-key.pem /usr/local/etc/opensearch/certs/
+CMD cp /root/wazuh-gen-certs/wazuh-certificates/admin-key.pem /usr/local/etc/opensearch/certs/
 CMD chmod 640 /usr/local/etc/opensearch/certs/admin-key.pem
 CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/admin-key.pem
-CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/indexer1.pem /usr/local/etc/opensearch/certs/
+CMD cp /root/wazuh-gen-certs/wazuh-certificates/indexer1.pem /usr/local/etc/opensearch/certs/
 CMD chmod 640 /usr/local/etc/opensearch/certs/indexer1.pem
 CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/indexer1.pem
-CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/indexer1-key.pem /usr/local/etc/opensearch/certs/
+CMD cp /root/wazuh-gen-certs/wazuh-certificates/indexer1-key.pem /usr/local/etc/opensearch/certs/
 CMD chmod 640 /usr/local/etc/opensearch/certs/indexer1-key.pem
 CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/indexer1-key.pem
-CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/root-ca.pem /usr/local/etc/opensearch/certs/
+CMD cp /root/wazuh-gen-certs/wazuh-certificates/root-ca.pem /usr/local/etc/opensearch/certs/
 CMD chmod 640 /usr/local/etc/opensearch/certs/root-ca.pem
 CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/root-ca.pem
 
-CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/dashboard.pem /usr/local/etc/opensearch-dashboards/certs/
+CMD cp /root/wazuh-gen-certs/wazuh-certificates/dashboard.pem /usr/local/etc/opensearch-dashboards/certs/
 CMD chmod 640 /usr/local/etc/opensearch-dashboards/certs/dashboard.pem
 CMD chown www:www /usr/local/etc/opensearch-dashboards/certs/dashboard.pem
-CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/dashboard-key.pem /usr/local/etc/opensearch-dashboards/certs/
+CMD cp /root/wazuh-gen-certs/wazuh-certificates/dashboard-key.pem /usr/local/etc/opensearch-dashboards/certs/
 CMD chmod 640 /usr/local/etc/opensearch-dashboards/certs/dashboard-key.pem
 CMD chown www:www /usr/local/etc/opensearch-dashboards/certs/dashboard-key.pem
-CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/root-ca.pem /usr/local/etc/opensearch-dashboards/certs/
+CMD cp /root/wazuh-gen-certs/wazuh-certificates/root-ca.pem /usr/local/etc/opensearch-dashboards/certs/
 CMD chmod 640 /usr/local/etc/opensearch-dashboards/certs/root-ca.pem
 CMD chown www:www /usr/local/etc/opensearch-dashboards/certs/root-ca.pem
 
-# enable and start opensearch
+CMD mv /root/freebsd-logo.png /usr/local/www/opensearch-dashboards/src/core/server/core_app/assets/logos/
+CMD mv /root/freebsd-mark-logo.png /usr/local/www/opensearch-dashboards/src/core/server/core_app/assets/logos/
+
+SYSRC wazuh_manager_enable=YES
+SYSRC filebeat_enable=YES
+SYSRC logstash_enable=YES
 SYSRC opensearch_enable=YES
 SYSRC opensearch_dashboards_enable=YES
 SYSRC opensearch_dashboards_syslog_output_enable=YES
@@ -56,3 +88,8 @@ SERVICE wazuh-manager start
 SERVICE filebeat start
 SERVICE logstash start
 SERVICE opensearch-dashboards start
+
+#RDR udp 1514 1514
+#RDR tcp 1515 1515
+#RDR tcp 5601 5601 
+#RDR tcp 55000 55000

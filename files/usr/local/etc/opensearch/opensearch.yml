@@ -1,5 +1,5 @@
 #
-# OpenSearch Server configuration
+# OpenSearch Server configuration for work like a Wazuh Indexer Server
 #
 
 network.host: "%%SERVER_IP%%"
@@ -8,7 +8,7 @@ cluster.initial_master_nodes:
 - "indexer1"
 #- "indexer2"
 #- "indexer3"
-cluster.name: "opensearch-cluster"
+cluster.name: "wazuh-cluster"
 #discovery.seed_hosts:
 #  - "indexer1-ip"
 #  - "indexer2-ip"
@@ -29,13 +29,13 @@ plugins.security.ssl.transport.resolve_hostname: false
 plugins.security.audit.type: internal_opensearch
 
 plugins.security.authcz.admin_dn:
-- "CN=admin,OU=Openssl,O=Openssl,L=California,C=US"
+- "CN=admin,OU=Wazuh,O=Wazuh,L=California,C=US"
 plugins.security.check_snapshot_restore_write_privileges: true
 plugins.security.enable_snapshot_restore_privilege: true
 plugins.security.nodes_dn:
-- "CN=indexer1,OU=Openssl,O=Openssl,L=California,C=US"
-#- "CN=indexer2,OU=Openssl,O=Openssl,L=California,C=US"
-#- "CN=indexer3,OU=Openssl,O=Openssl,L=California,C=US"
+- "CN=indexer1,OU=Wazuh,O=Wazuh,L=California,C=US"
+#- "CN=indexer2,OU=Wazuh,O=Wazuh,L=California,C=US"
+#- "CN=indexer3,OU=Wazuh,O=Wazuh,L=California,C=US"
 plugins.security.restapi.roles_enabled:
 - "all_access"
 - "security_rest_api_access"

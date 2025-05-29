@@ -1,4 +1,11 @@
+# Opensearch
+Opensearch is a fork of Elasticsearch that functions as a database/NoSQL with a focus on search engine databases.
+
 ## Now apply template to container
+Include:
+- Opensearch
+- Logstash&Filebeats
+- Opensearch-Dashboards
 ```sh
 git clone https://github.com/bastille-templates/opensearch.git; cd opensearch
 
@@ -12,7 +19,9 @@ sed -e "s,%%SERVER_NAME%%,${J_NAME},g" -i "" ${J_PATH}/jail.conf
 sed -e "s,%%RELEASE%%,${FBSD_R},g" -i "" ${J_PATH}/jail.conf
 sed -e "s,%%SERVER_IP%%,${J_IP},g" -i "" ${J_PATH}/jail.conf
 cp rdr.conf ${J_PATH}/
+
 bastille stop opensearch; bastille start opensearch
+
 bastille bootstrap https://github.com/bastille-templates/opensearch
 bastille template opensearch bastille-templates/opensearch
 bastille pkg opensearch info -D -x opensearch | less
