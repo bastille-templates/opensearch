@@ -1,13 +1,58 @@
-ARG version=210
+CMD sed -e "s|quarterly|latest|g" -i.bak /etc/pkg/FreeBSD.conf
 
-# install required packages
-INCLUDE https://github.com/bastille-templates/openjdk/tree/v17
+PKG opensearch219 opensearch-dashboards219
 
-PKG opensearch${version}
-# copy files
-CP etc /
+CP files/usr/local/etc/opensearch/opensearch.yml /usr/local/etc/opensearch/opensearch.yml
+CMD sed -e "s,%%SERVER_IP%%,${JAIL_IP},g" -i "" /usr/local/etc/opensearch-dashboards/opensearch_dashboards.yml
+
+CMD cd /tmp/; fetch "https://github.com/bastille-templates/openssl/archive/refs/tags/gen-ssl0.0.1.tar.gz"
+CMD cd /tmp/; tar xvfz gen-ssl0.0.1.tar.gz
+CMD echo "indexer1_ip=${JAIL_IP}" > /tmp/openssl-gen-ssl0.0.1/gen-certs/in.indexer.lst
+CMD echo "server1_ip=${JAIL_IP}" > /tmp/openssl-gen-ssl0.0.1/gen-certs/in.server.lst
+CMD echo "dashboard_ip=${JAIL_IP}" > /tmp/openssl-gen-ssl0.0.1/gen-certs/in.dashboard.lst
+CMD cd /tmp/openssl-gen-ssl0.0.1/gen-certs; echo y | sh gen-certs.sh
+
+CMD mkdir -p /usr/local/etc/opensearch/certs/
+CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/admin.pem /usr/local/etc/opensearch/certs/
+CMD chmod 640 /usr/local/etc/opensearch/certs/admin.pem
+CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/admin.pem
+CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/admin-key.pem /usr/local/etc/opensearch/certs/
+CMD chmod 640 /usr/local/etc/opensearch/certs/admin-key.pem
+CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/admin-key.pem
+CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/indexer1.pem /usr/local/etc/opensearch/certs/
+CMD chmod 640 /usr/local/etc/opensearch/certs/indexer1.pem
+CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/indexer1.pem
+CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/indexer1-key.pem /usr/local/etc/opensearch/certs/
+CMD chmod 640 /usr/local/etc/opensearch/certs/indexer1-key.pem
+CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/indexer1-key.pem
+CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/root-ca.pem /usr/local/etc/opensearch/certs/
+CMD chmod 640 /usr/local/etc/opensearch/certs/root-ca.pem
+CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/root-ca.pem
+
+CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/dashboard.pem /usr/local/etc/opensearch-dashboards/certs/
+CMD chmod 640 /usr/local/etc/opensearch-dashboards/certs/dashboard.pem
+CMD chown www:www /usr/local/etc/opensearch-dashboards/certs/dashboard.pem
+CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/dashboard-key.pem /usr/local/etc/opensearch-dashboards/certs/
+CMD chmod 640 /usr/local/etc/opensearch-dashboards/certs/dashboard-key.pem
+CMD chown www:www /usr/local/etc/opensearch-dashboards/certs/dashboard-key.pem
+CMD cp /tmp/openssl-gen-ssl0.0.1/gen-certs/out-certificates/root-ca.pem /usr/local/etc/opensearch-dashboards/certs/
+CMD chmod 640 /usr/local/etc/opensearch-dashboards/certs/root-ca.pem
+CMD chown www:www /usr/local/etc/opensearch-dashboards/certs/root-ca.pem
 
 # enable and start opensearch
 SYSRC opensearch_enable=YES
+SYSRC opensearch_dashboards_enable=YES
+SYSRC opensearch_dashboards_syslog_output_enable=YES
 
 SERVICE opensearch start
+
+CMD sh /root/post-opensearch-init.sh
+CMD rm /root/post-opensearch-init.sh
+
+CMD chmod 640 /var/ossec/etc/authd.pass
+CMD chown root:wazuh /var/ossec/etc/authd.pass
+
+SERVICE wazuh-manager start
+SERVICE filebeat start
+SERVICE logstash start
+SERVICE opensearch-dashboards start
