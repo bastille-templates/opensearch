@@ -1,1 +1,1 @@
-dashboard_ip=10.0.0.30
+dashboard_ip=%%SERVER_IP%%

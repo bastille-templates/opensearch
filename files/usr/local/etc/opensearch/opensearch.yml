@@ -3,25 +3,25 @@
 #
 
 network.host: "%%SERVER_IP%%"
-node.name: "indexer1"
+node.name: "indexer"
 cluster.initial_master_nodes:
-- "indexer1"
+- "indexer"
 #- "indexer2"
 #- "indexer3"
-cluster.name: "wazuh-cluster"
+cluster.name: "opensearch-cluster"
 #discovery.seed_hosts:
-#  - "indexer1-ip"
+#  - "indexer-ip"
 #  - "indexer2-ip"
 #  - "indexer3-ip"
 node.max_local_storage_nodes: "3"
 path.data: /var/db/opensearch
 path.logs: /var/log/opensearch
 
-plugins.security.ssl.http.pemcert_filepath: /usr/local/etc/opensearch/certs/indexer1.pem
-plugins.security.ssl.http.pemkey_filepath: /usr/local/etc/opensearch/certs/indexer1-key.pem
+plugins.security.ssl.http.pemcert_filepath: /usr/local/etc/opensearch/certs/indexer.pem
+plugins.security.ssl.http.pemkey_filepath: /usr/local/etc/opensearch/certs/indexer-key.pem
 plugins.security.ssl.http.pemtrustedcas_filepath: /usr/local/etc/opensearch/certs/root-ca.pem
-plugins.security.ssl.transport.pemcert_filepath: /usr/local/etc/opensearch/certs/indexer1.pem
-plugins.security.ssl.transport.pemkey_filepath: /usr/local/etc/opensearch/certs/indexer1-key.pem
+plugins.security.ssl.transport.pemcert_filepath: /usr/local/etc/opensearch/certs/indexer.pem
+plugins.security.ssl.transport.pemkey_filepath: /usr/local/etc/opensearch/certs/indexer-key.pem
 plugins.security.ssl.transport.pemtrustedcas_filepath: /usr/local/etc/opensearch/certs/root-ca.pem
 plugins.security.ssl.http.enabled: true
 plugins.security.ssl.transport.enforce_hostname_verification: false
@@ -29,13 +29,13 @@ plugins.security.ssl.transport.resolve_hostname: false
 plugins.security.audit.type: internal_opensearch
 
 plugins.security.authcz.admin_dn:
-- "CN=admin,OU=Wazuh,O=Wazuh,L=California,C=US"
+- "CN=admin,OU=Opensearch,O=Opensearch,L=California,C=US"
 plugins.security.check_snapshot_restore_write_privileges: true
 plugins.security.enable_snapshot_restore_privilege: true
 plugins.security.nodes_dn:
-- "CN=indexer1,OU=Wazuh,O=Wazuh,L=California,C=US"
-#- "CN=indexer2,OU=Wazuh,O=Wazuh,L=California,C=US"
-#- "CN=indexer3,OU=Wazuh,O=Wazuh,L=California,C=US"
+- "CN=indexer,OU=Opensearch,O=Opensearch,L=California,C=US"
+#- "CN=indexer2,OU=Opensearch,O=Opensearch,L=California,C=US"
+#- "CN=indexer3,OU=Opensearch,O=Opensearch,L=California,C=US"
 plugins.security.restapi.roles_enabled:
 - "all_access"
 - "security_rest_api_access"

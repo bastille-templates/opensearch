@@ -1,3 +1,3 @@
-server_ip=10.0.0.10
-#filebeat1_ip=10.0.0.10
-#logstash1_ip=10.0.0.11
+#server_ip=%%SERVER_IP%%
+filebeat_ip=%%SERVER_IP%%
+logstash_ip=%%SERVER_IP%%
