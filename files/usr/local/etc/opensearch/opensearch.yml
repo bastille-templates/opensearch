@@ -1,5 +1,5 @@
 #
-# OpenSearch Server configuration for work like a Wazuh Indexer Server
+# OpenSearch Server configuration
 #
 
 network.host: "%%SERVER_IP%%"
