@@ -38,22 +38,22 @@ CMD cd /root/gen-certs; echo y | sh gen-certs.sh
 CMD chmod 660 /var/ossec/etc/ossec.conf
 CMD chown root:wazuh /var/ossec/etc/ossec.conf
 
-CMD cp /root/gen-certs/wazuh-certificates/admin.pem /usr/local/etc/opensearch/certs/
-CMD cp /root/gen-certs/wazuh-certificates/admin-key.pem /usr/local/etc/opensearch/certs/
-CMD cp /root/gen-certs/wazuh-certificates/indexer.pem /usr/local/etc/opensearch/certs/
-CMD cp /root/gen-certs/wazuh-certificates/indexer-key.pem /usr/local/etc/opensearch/certs/
-CMD cp /root/gen-certs/wazuh-certificates/root-ca.pem /usr/local/etc/opensearch/certs/
+CMD cp /root/gen-certs/out-certificates/admin.pem /usr/local/etc/opensearch/certs/
+CMD cp /root/gen-certs/out-certificates/admin-key.pem /usr/local/etc/opensearch/certs/
+CMD cp /root/gen-certs/out-certificates/indexer.pem /usr/local/etc/opensearch/certs/
+CMD cp /root/gen-certs/out-certificates/indexer-key.pem /usr/local/etc/opensearch/certs/
+CMD cp /root/gen-certs/out-certificates/root-ca.pem /usr/local/etc/opensearch/certs/
 CMD chmod 640 /usr/local/etc/opensearch/certs/*.pem
 CMD chown opensearch:opensearch /usr/local/etc/opensearch/certs/*.pem
 
-CMD cp /root/gen-certs/wazuh-certificates/dashboard.pem /usr/local/etc/opensearch-dashboards/certs/
-CMD cp /root/gen-certs/wazuh-certificates/dashboard-key.pem /usr/local/etc/opensearch-dashboards/certs/
-CMD cp /root/gen-certs/wazuh-certificates/root-ca.pem /usr/local/etc/opensearch-dashboards/certs/
+CMD cp /root/gen-certs/out-certificates/dashboard.pem /usr/local/etc/opensearch-dashboards/certs/
+CMD cp /root/gen-certs/out-certificates/dashboard-key.pem /usr/local/etc/opensearch-dashboards/certs/
+CMD cp /root/gen-certs/out-certificates/root-ca.pem /usr/local/etc/opensearch-dashboards/certs/
 CMD chmod 640 /usr/local/etc/opensearch-dashboards/certs/*.pem
 CMD chown www:www /usr/local/etc/opensearch-dashboards/certs/*.pem
 
-SYSRC filebeat_enable=YES
-SYSRC logstash_enable=YES
+#SYSRC filebeat_enable=YES
+#SYSRC logstash_enable=YES
 SYSRC opensearch_enable=YES
 SYSRC opensearch_dashboards_enable=YES
 SYSRC opensearch_dashboards_syslog_output_enable=YES
@@ -66,8 +66,8 @@ CMD rm /root/post-opensearch-init.sh
 CMD chmod 640 /var/ossec/etc/authd.pass
 CMD chown root:wazuh /var/ossec/etc/authd.pass
 
-SERVICE filebeat start
-SERVICE logstash start
+#SERVICE filebeat start
+#SERVICE logstash start
 SERVICE opensearch-dashboards start
 
 #RDR tcp 5601 5601 

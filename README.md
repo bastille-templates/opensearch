@@ -24,6 +24,7 @@ bastille stop opensearch; bastille start opensearch
 
 bastille bootstrap https://github.com/bastille-templates/opensearch
 bastille template opensearch bastille-templates/opensearch
+
 bastille pkg opensearch info -D -x opensearch | less
 ```
 test
