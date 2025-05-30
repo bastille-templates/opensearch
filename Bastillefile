@@ -25,8 +25,8 @@ CMD sed -e "s,%%SERVER_IP%%,${JAIL_IP},g" -i "" /root/post-opensearch-init.sh
 CMD chown root:wheel /root/pre-opensearch-init.sh
 CMD chown root:wheel /root/post-opensearch-init.sh
 
-CMD sh /root/pre-opensearch-init.sh
-CMD rm /root/pre-opensearch-init.sh
+#CMD sh /root/pre-opensearch-init.sh
+#CMD rm /root/pre-opensearch-init.sh
 
 CMD mkdir -p /usr/local/etc/opensearch-dashboards/certs/
 CMD mkdir -p /usr/local/etc/opensearch/certs/
@@ -60,8 +60,8 @@ SYSRC opensearch_dashboards_syslog_output_enable=YES
 
 SERVICE opensearch start
 
-CMD sh /root/post-opensearch-init.sh
-CMD rm /root/post-opensearch-init.sh
+#CMD sh /root/post-opensearch-init.sh
+#CMD rm /root/post-opensearch-init.sh
 
 CMD chmod 640 /var/ossec/etc/authd.pass
 CMD chown root:wazuh /var/ossec/etc/authd.pass
